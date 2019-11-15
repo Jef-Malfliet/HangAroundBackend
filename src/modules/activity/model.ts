@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { Person } from '../person/model';
+import { Role } from '../role/model';
 
 export interface Activity{
     _id: any,
@@ -7,7 +7,7 @@ export interface Activity{
     startDate: Date,
     endDate: Date,
     place: string,
-    participants: Map<Person, Role>,
+    participants: Map<string, string>,
     description: string
 }
 

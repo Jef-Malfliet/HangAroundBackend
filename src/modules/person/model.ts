@@ -11,7 +11,7 @@ export interface PersonDocument extends Person, Document {}
 const schema = new Schema(
   {
     name: { type: String, required: true },
-    friends: [{ type: String, ref: "people", required: false }]
+    friends: [{ type: Schema.Types.ObjectId, ref: "people", required: false }]
   },
   { _id: true, timestamps: true }
 );
