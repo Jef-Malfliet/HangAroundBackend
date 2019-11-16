@@ -1,8 +1,8 @@
 import { Router } from "express";
 import models from "../models";
-import jwt from 'jsonwebtoken';
-import { model } from '../modules/person/model';
-import * as bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
+import { model } from "../modules/person/model";
+import * as bcrypt from "bcrypt";
 
 const routes = Router();
 
@@ -23,16 +23,19 @@ routes.get("/getPersonById", async (req, res) => {
 
 //update
 routes.post("/updatePerson", async (req, res) => {
-  const updatedperson = models.person.model
+  const updatedperson = await models.person.model
     .findByIdAndUpdate(
       { _id: req.body.id },
       {
         name: req.body.name,
-        friends: req.body.friends
+        friends: req.body.friends,
+        email: req.body.email
       },
       { new: true, upsert: true }
     )
-    .catch(e => res.status(400).send({ error: e }));
+    .catch(e => {
+      res.status(400).send({ error: e });
+    });
   res.status(201).send(updatedperson);
 });
 
@@ -41,7 +44,7 @@ routes.delete("/deletePerson", async (req, res) => {
   await models.person.model
     .findByIdAndDelete({ _id: req.query.id })
     .catch(e => res.status(400).send({ error: e }));
-  res.send({ id: req.query.id });
+  res.status(201).send({ id: req.query.id });
 });
 
 //register

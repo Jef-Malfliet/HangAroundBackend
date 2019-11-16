@@ -4,7 +4,11 @@
   "description": "Backend for HangAround android and ios apps",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cross-env NODE_ENV=prod ts-node-dev --transpileOnly src/index.ts",
+    "dev": "cross-env NODE_ENV=local ts-node-dev --transpileOnly src/index.ts",
+    "test": "cross-env NODE_ENV=test jest -i",
+    "test:watch": "cross-env NODE_ENV=test jest --watch -i",
+    "test:coverage": "cross-env NODE_ENV=test jest --coverage --silent -i"
   },
   "author": "Jef Malfliet",
   "license": "ISC",
@@ -16,10 +20,12 @@
     "bcrypt": "^3.0.6",
     "codelyzer": "^5.2.0",
     "cors": "^2.8.5",
+    "cross-env": "^6.0.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.11",
+    "ts-node-dev": "^1.0.0-pre.44",
     "tslint": "^5.20.1",
     "typescript": "^3.7.2"
   },

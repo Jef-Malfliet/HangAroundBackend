@@ -28,8 +28,8 @@ const startServer = async () => {
 
     routes.get("/", (req, res) => res.send("OK"));
     // use routers from services
-    routes.get("/", activityRouter);
-    routes.get("/", personRouter);
+    routes.use("/", activityRouter);
+    routes.use("/", personRouter);
     const httpServer: Server = http.createServer(app);
     httpServer.listen(process.env.PORT, async () => {
       console.log(`🚀 Server ready at http://localhost:${process.env.PORT}`);

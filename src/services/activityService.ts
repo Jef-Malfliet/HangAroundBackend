@@ -20,7 +20,7 @@ routes.get("/getActivityById", async (req, res) => {
 });
 
 routes.get("/getActivitiesByOwner", async (req, res) => {
-  const activities = models.activity.model
+  const activities = await models.activity.model
     .find({ owner: req.query.owner })
     .catch(e => res.status(400).send({ error: e }));
   res.send(activities);
@@ -28,7 +28,7 @@ routes.get("/getActivitiesByOwner", async (req, res) => {
 
 //make
 routes.post("/makeActivity", async (req, res) => {
-  const activity = models.activity.model
+  const activity = await models.activity.model
     .create({
       name: req.body.name,
       owner: req.body.owner,
@@ -44,7 +44,7 @@ routes.post("/makeActivity", async (req, res) => {
 
 //update
 routes.post("/updateActivity", async (req, res) => {
-  const updatedActivity = models.activity.model
+  const updatedActivity = await models.activity.model
     .findByIdAndUpdate(
       { _id: req.body.id },
       {
