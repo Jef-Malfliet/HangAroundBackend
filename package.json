@@ -2,7 +2,7 @@
   "name": "hangaroundbackend",
   "version": "1.0.0",
   "description": "Backend for HangAround android and ios apps",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "start": "cross-env NODE_ENV=prod ts-node-dev --transpileOnly src/index.ts",
     "dev": "cross-env NODE_ENV=local ts-node-dev --transpileOnly src/index.ts",
