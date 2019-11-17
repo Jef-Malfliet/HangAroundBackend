@@ -21,6 +21,13 @@ routes.get("/getPersonById", async (req, res) => {
   res.send(person);
 });
 
+routes.get("/getPersonByName", async (req, res) => {
+  const person = await models.person.model
+    .find({ name: req.query.name })
+    .catch(e => res.status(400).send({ error: e }));
+  res.send(person);
+});
+
 //update
 routes.post("/updatePerson", async (req, res) => {
   const updatedperson = await models.person.model
