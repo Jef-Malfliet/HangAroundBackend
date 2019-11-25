@@ -26,6 +26,16 @@ routes.get("/getActivitiesByOwner", async (req, res) => {
   res.send(activities);
 });
 
+routes.get("/getPersonsInActivity", async (req, res) => {
+  const activity = await models.activity.model.findById({ _id: req.query.id });
+  const persons = await Promise.all(
+    Array.from(activity.participants.keys()).map(async id => {
+      return await models.person.model.findById({ _id: id });
+    })
+  ).catch(e => res.status(400).send({ error: e }));
+  res.send(persons);
+});
+
 //make
 routes.post("/makeActivity", async (req, res) => {
   const activity = await models.activity.model
