@@ -38,6 +38,16 @@ routes.get("/getPersonsInActivity", async (req, res) => {
   res.send(persons);
 });
 
+routes.get("/getFriendsOfPerson", async (req, res) => {
+  const person = await models.person.model.findById({ _id: req.query.id });
+  const friends = await Promise.all(
+    person.friends.map(async id => {
+      return await models.person.model.findById({ _id: id });
+    })
+  ).catch(e => res.status(400).send({error: e}));
+  res.send(friends)
+});
+
 //update
 routes.post("/updatePerson", async (req, res) => {
   const updatedperson = await models.person.model
