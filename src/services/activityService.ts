@@ -1,6 +1,7 @@
 import { Router } from "express";
 import models from "../models";
 import { stringToDate } from "../util";
+import { Activity } from "src/modules/activity/model";
 
 const routes = Router();
 
@@ -26,14 +27,24 @@ routes.get("/getActivitiesByOwner", async (req, res) => {
   res.send(activities);
 });
 
-routes.get("/getPersonsInActivity", async (req, res) => {
-  const activity = await models.activity.model.findById({ _id: req.query.id });
-  const persons = await Promise.all(
-    Array.from(activity.participants.keys()).map(async id => {
-      return await models.person.model.findById({ _id: id });
-    })
-  ).catch(e => res.status(400).send({ error: e }));
-  res.send(persons);
+routes.get("/getActivitiesContainingPerson", async (req, res) => {
+  const activitiesWithPerson = await models.activity.model.find({
+    owner: req.query.id
+  });
+
+  const activityMap = new Map<String, Activity>();
+  activitiesWithPerson.forEach(activity => {
+    activityMap.set(activity.id, activity);
+  });
+
+  const activities = await models.activity.model.find({});
+  activities.forEach(activity => {
+    if (activity.participants.has(req.query.id)) {
+      activityMap.set(activity.id, activity);
+    }
+  });
+  
+  res.send(Array.from(activityMap.values()));
 });
 
 //make
