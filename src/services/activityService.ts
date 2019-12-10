@@ -1,7 +1,7 @@
 import { Router } from "express";
 import models from "../models";
 import { stringToDate } from "../util";
-import { Activity } from "src/modules/activity/model";
+import { Activity } from "../modules/activity/model";
 
 const routes = Router();
 
@@ -39,11 +39,13 @@ routes.get("/getActivitiesContainingPerson", async (req, res) => {
 
   const activities = await models.activity.model.find({});
   activities.forEach(activity => {
-    if (activity.participants.has(req.query.id)) {
-      activityMap.set(activity.id, activity);
-    }
+    activity.participants.forEach(p => {
+      if (p.personId == req.query.id) {
+        activityMap.set(activity.id, activity);
+      }
+    });
   });
-  
+
   res.send(Array.from(activityMap.values()));
 });
 

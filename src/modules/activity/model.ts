@@ -8,7 +8,7 @@ export interface Activity{
     startDate: Date,
     endDate: Date,
     place: string,
-    participants: [{key: String, value: String}],
+    participants: [{personId: String, role: String}],
     description: string
 }
 
@@ -21,7 +21,7 @@ const schema = new Schema(
       startDate: { type: Date, required: true },
       endDate: { type: Date, required: true },
       place: {type: String, required: true},
-      participants: [{key: String, value: String}],
+      participants: [{personId: String, role: String}],
       description: { type: String, required: false },
     },
     { _id: true, timestamps: true }
