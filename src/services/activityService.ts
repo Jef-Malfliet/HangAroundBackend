@@ -46,7 +46,7 @@ routes.get("/getActivitiesContainingPerson", async (req, res) => {
     });
   });
 
-  res.send(Array.from(activityMap.values()));
+  res.send({activities: Array.from(activityMap.values())});
 });
 
 //make
