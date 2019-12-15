@@ -39,7 +39,7 @@ routes.get("/getPersonsInActivity", async (req, res) => {
       return await models.person.model.findById({ _id: id });
     })
   ).catch(e => res.status(400).send({ error: e }));
-  res.send(persons);
+  res.send({persons: persons});
 });
 
 routes.get("/getFriendsOfPerson", async (req, res) => {
@@ -49,7 +49,7 @@ routes.get("/getFriendsOfPerson", async (req, res) => {
       return await models.person.model.findById({ _id: id });
     })
   ).catch(e => res.status(400).send({error: e}));
-  res.send(friends)
+  res.send({persons: friends})
 });
 
 //update
