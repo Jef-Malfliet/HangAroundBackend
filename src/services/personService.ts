@@ -8,17 +8,17 @@ const routes = Router();
 
 //get
 routes.get("/getPersons", async (req, res) => {
-  const activities = await models.person.model
+  const persons = await models.person.model
     .find({})
     .catch(e => res.status(400).send({ error: e }));
-  res.send(activities);
+  res.send({ persons: persons });
 });
 
 routes.get("/getPersonById", async (req, res) => {
   const person = await models.person.model
     .find({ _id: req.query.id })
     .catch(e => res.status(400).send({ error: e }));
-  res.send(person);
+  res.send({ persons: person });
 });
 
 routes.get("/getPersonByName", async (req, res) => {
@@ -30,16 +30,16 @@ routes.get("/getPersonByName", async (req, res) => {
 
 routes.get("/getPersonsInActivity", async (req, res) => {
   const activity = await models.activity.model.findById({ _id: req.query.id });
-  const personIds: String[] = []
+  const personIds: String[] = [];
   activity.participants.forEach(p => {
-    personIds.push(p.personId)
-  })
+    personIds.push(p.personId);
+  });
   const persons = await Promise.all(
     personIds.map(async id => {
       return await models.person.model.findById({ _id: id });
     })
   ).catch(e => res.status(400).send({ error: e }));
-  res.send({persons: persons});
+  res.send({ persons: persons });
 });
 
 routes.get("/getFriendsOfPerson", async (req, res) => {
@@ -48,8 +48,8 @@ routes.get("/getFriendsOfPerson", async (req, res) => {
     person.friends.map(async id => {
       return await models.person.model.findById({ _id: id });
     })
-  ).catch(e => res.status(400).send({error: e}));
-  res.send({persons: friends})
+  ).catch(e => res.status(400).send({ error: e }));
+  res.send({ persons: friends });
 });
 
 //update
@@ -67,7 +67,7 @@ routes.post("/updatePerson", async (req, res) => {
     .catch(e => {
       res.status(400).send({ error: e });
     });
-  res.status(201).send(updatedperson);
+  res.status(201).send({ persons: updatedperson });
 });
 
 //delete

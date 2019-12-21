@@ -45,8 +45,7 @@ routes.get("/getActivitiesContainingPerson", async (req, res) => {
       }
     });
   });
-
-  res.send({activities: Array.from(activityMap.values())});
+  res.send({ activities: Array.from(activityMap.values()) });
 });
 
 //make
@@ -69,7 +68,7 @@ routes.post("/makeActivity", async (req, res) => {
 routes.post("/updateActivity", async (req, res) => {
   const updatedActivity = await models.activity.model
     .findByIdAndUpdate(
-      { _id: req.body.id },
+      { _id: req.body._id },
       {
         name: req.body.name,
         owner: req.body.owner,
@@ -82,7 +81,8 @@ routes.post("/updateActivity", async (req, res) => {
       { new: true, upsert: true }
     )
     .catch(e => res.status(400).send({ error: e }));
-  res.status(201).send(updatedActivity);
+  console.log(updatedActivity);
+  res.status(201).send({ activities: Array.of(updatedActivity) });
 });
 
 //delete
