@@ -1,8 +1,5 @@
 import { Router } from "express";
 import models from "../models";
-import jwt from "jsonwebtoken";
-import { model, Person } from "../modules/person/model";
-import * as bcrypt from "bcrypt";
 
 const routes = Router();
 
@@ -130,7 +127,7 @@ routes.post("/loginPerson", async (req, res) => {
     return;
   }
 
-  const person = await model.findOne({ email: req.body.email });
+  const person = await models.person.model.findOne({ email: req.body.email });
   res.status(201).send({ persons: Array.of(person) });
 });
 //#endregion
