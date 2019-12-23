@@ -1,6 +1,6 @@
 # Backend for HangAround
 
-this is the backend for the android and ios apps hangAround.
+This is the backend for the android and ios apps HangAround.
 
 ## Setup:
 
@@ -14,7 +14,7 @@ Run project:
 npm run dev
 ```
 
-You will need an .env-file with the right info to run it correctly though. unfortunately those are secrets. :)
+You will need an .env-file with the right info to run it correctly though. Unfortunately those are secrets. :)
 
 ## Links:
 
