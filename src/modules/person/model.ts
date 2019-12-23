@@ -4,7 +4,6 @@ export interface Person {
     _id: any;
     name: string;
     email: string;
-    password: string;
     friends: Person[];
 }
 
@@ -15,7 +14,6 @@ const schema = new Schema(
         name: { type: String, required: true },
         friends: [{ type: Schema.Types.ObjectId, ref: "people", required: false }],
         email: { type: String, required: true },
-        password: { type: String, required: true, minlength: 7 }
     },
     { _id: true, timestamps: true }
 );

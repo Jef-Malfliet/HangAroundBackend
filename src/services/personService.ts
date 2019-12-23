@@ -1,12 +1,12 @@
 import { Router } from "express";
 import models from "../models";
 import jwt from "jsonwebtoken";
-import { model } from "../modules/person/model";
+import { model, Person } from "../modules/person/model";
 import * as bcrypt from "bcrypt";
 
 const routes = Router();
 
-//get
+//#region GET
 routes.get("/getPersons", async (req, res) => {
   const persons = await models.person.model
     .find({})
@@ -44,19 +44,30 @@ routes.get("/getPersonsInActivity", async (req, res) => {
 
 routes.get("/getFriendsOfPerson", async (req, res) => {
   const person = await models.person.model.findById({ _id: req.query.id });
+
   const friends = await Promise.all(
     person.friends.map(async id => {
       return await models.person.model.findById({ _id: id });
     })
   ).catch(e => res.status(400).send({ error: e }));
+  console.log(friends);
   res.send({ persons: friends });
 });
 
-//update
+routes.get("/getPersonsWithNameLike", async (req, res) => {
+  const personsLikeName = await models.person.model
+    .find({ name: { $regex: ".*" + req.query.name + ".*" } })
+    .catch(e => res.status(400).send({ error: e }));
+  res.status(201).send({ persons: personsLikeName });
+});
+//#endregion
+
+//#region UPDATE
 routes.post("/updatePerson", async (req, res) => {
+  console.log(req.body);
   const updatedperson = await models.person.model
     .findByIdAndUpdate(
-      { _id: req.body.id },
+      { _id: req.body._id },
       {
         name: req.body.name,
         friends: req.body.friends,
@@ -67,67 +78,61 @@ routes.post("/updatePerson", async (req, res) => {
     .catch(e => {
       res.status(400).send({ error: e });
     });
-  res.status(201).send({ persons: updatedperson });
+  console.log(updatedperson);
+  res.status(201).send({ persons: Array.of(updatedperson) });
 });
+//#endregion
 
-//delete
+//#region DELETE
 routes.delete("/deletePerson", async (req, res) => {
   await models.person.model
     .findByIdAndDelete({ _id: req.query.id })
     .catch(e => res.status(400).send({ error: e }));
   res.status(201).send({ id: req.query.id });
 });
+//#endregion
+
+//#region Management
+//check if person exists
+routes.get("/checkPersonExists", async (req, res) => {
+  console.log(req.query);
+  if (await models.person.model.findOne({ email: req.query.email })) {
+    res.status(201).send(true);
+    return;
+  }
+  res.status(201).send(false);
+});
 
 //register
 routes.post("/registerPerson", async (req, res) => {
-  if (await model.findOne({ email: req.body.email })) {
+  if (await models.person.model.findOne({ email: req.body.email })) {
     res.status(400).send({ error: "person already exists, try logging in" });
+    return;
   }
-
-  const hashedPassword = await bcrypt.hash(req.body.password, 10);
-  const personObject = { email: req.body.email, password: hashedPassword };
-  const token = jwt.sign(personObject, process.env.JWT_KEY_SECRET, {
-    expiresIn: "1h"
-  });
 
   const person = await models.person.model
     .create({
       name: req.body.name,
       friends: req.body.friends,
-      email: req.body.email,
-      password: hashedPassword
+      email: req.body.email
     })
     .catch(e => res.status(400).send({ error: e }));
 
-  res.send(token);
+  res.status(201).send({ persons: Array.of(person) });
 });
 
 //login
 routes.post("/loginPerson", async (req, res) => {
-  if (!(await model.findOne({ email: req.body.email }))) {
+  if (!(await models.person.model.findOne({ email: req.body.email }))) {
     res
       .status(404)
       .send({ error: "person does not exists, try registering first" });
+    return;
   }
 
   const person = await model.findOne({ email: req.body.email });
-  const passwordsMatching = await bcrypt.compare(
-    req.body.password,
-    person.password
-  );
-
-  if (!passwordsMatching) {
-    res.status(400).send({ error: "password is not correct, try again" });
-  }
-
-  const personObject = {
-    email: person.email,
-    password: person.password
-  };
-  const token = jwt.sign(personObject, process.env.JWT_KEY_SECRET, {
-    expiresIn: "1h"
-  });
-  res.send(token);
+  res.status(201).send({ persons: Array.of(person) });
 });
+//#endregion
 
 export default routes;

@@ -5,7 +5,7 @@ import { Activity } from "../modules/activity/model";
 
 const routes = Router();
 
-//get
+//#region GET
 routes.get("/getActivities", async (req, res) => {
   const activities = await models.activity.model
     .find({})
@@ -47,9 +47,11 @@ routes.get("/getActivitiesContainingPerson", async (req, res) => {
   });
   res.send({ activities: Array.from(activityMap.values()) });
 });
+//#endregion
 
-//make
+//#region MAKE
 routes.post("/makeActivity", async (req, res) => {
+  console.log(req.body)
   const activity = await models.activity.model
     .create({
       name: req.body.name,
@@ -61,10 +63,12 @@ routes.post("/makeActivity", async (req, res) => {
       description: req.body.description
     })
     .catch(e => res.status(400).send({ error: e }));
+    console.log(activity)
   res.status(201).send(activity);
 });
+//#endregion
 
-//update
+//#region UPDATE
 routes.post("/updateActivity", async (req, res) => {
   const updatedActivity = await models.activity.model
     .findByIdAndUpdate(
@@ -87,10 +91,15 @@ routes.post("/updateActivity", async (req, res) => {
 
 //delete
 routes.delete("/deleteActivity", async (req, res) => {
+  const activity = await models.activity.model
+    .find({ _id: req.query.id })
+    .catch(e => res.status(400).send({ error: e }));
   await models.activity.model
     .findByIdAndDelete({ _id: req.query.id })
     .catch(e => res.status(400).send({ error: e }));
-  res.send({ id: req.query.id });
+    console.log(activity)
+  res.status(201).send({ activities: activity});
 });
+//#endregion
 
 export default routes;
